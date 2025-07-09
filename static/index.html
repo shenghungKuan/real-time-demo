@@ -72,7 +72,7 @@
     <div id="errorMessage" class="error"></div>
 
     <script>
-        let ws;
+        let wss;
         const messageList = document.getElementById('messageList');
         const startButton = document.getElementById('startButton');
         const errorMessage = document.getElementById('errorMessage');
@@ -93,23 +93,23 @@
         }
 
         function connectWebSocket() {
-            if (ws) {
-                ws.close();
+            if (wss) {
+                wss.close();
             }
 
             updateStatus('Connecting...');
             console.log('Initializing WebSocket connection...');
             
-            ws = new WebSocket(`ws://${window.location.host}/ws`);
+            wss = new WebSocket(`wss://${window.location.host}/wss`);
             
-            ws.onopen = function() {
+            wss.onopen = function() {
                 console.log('WebSocket connection established');
                 updateStatus('Connected - Monitoring for updates');
                 startButton.textContent = 'Stop Monitoring';
                 loadMessages();
             };
 
-            ws.onmessage = function(event) {
+            wss.onmessage = function(event) {
                 console.log('Received update:', event.data);
                 try {
                     const data = JSON.parse(event.data);
@@ -122,14 +122,14 @@
                 }
             };
 
-            ws.onerror = function(error) {
+            wss.onerror = function(error) {
                 console.error('WebSocket error:', error);
                 showError('Connection error');
                 updateStatus('Connection error');
                 startButton.textContent = 'Start Monitoring';
             };
 
-            ws.onclose = function() {
+            wss.onclose = function() {
                 console.log('WebSocket connection closed');
                 updateStatus('Not connected');
                 startButton.textContent = 'Start Monitoring';
@@ -170,9 +170,9 @@
         }
 
         startButton.onclick = function() {
-            if (ws && ws.readyState === WebSocket.OPEN) {
+            if (wss && wss.readyState === WebSocket.OPEN) {
                 console.log('Stopping monitoring');
-                ws.close();
+                wss.close();
             } else {
                 console.log('Starting monitoring');
                 connectWebSocket();

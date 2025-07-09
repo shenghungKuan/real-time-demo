@@ -121,7 +121,7 @@ async def get_all_messages():
     logger.info(f"Retrieved {len(messages)} messages from database")
     return messages
 
-@app.websocket("/ws")
+@app.websocket("/wss")
 async def websocket_endpoint(websocket: WebSocket):
     await manager.connect(websocket)
     try:
